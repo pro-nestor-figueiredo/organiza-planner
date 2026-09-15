@@ -89,3 +89,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/entrar/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/entrar/'
+
+# Django 4 exige o Origin batendo: libera os enderecos usados pra abrir o app
+CSRF_TRUSTED_ORIGINS = [
+    'http://192.168.1.21:8022',
+    'http://127.0.0.1:8022',
+    'http://localhost:8022',
+]
