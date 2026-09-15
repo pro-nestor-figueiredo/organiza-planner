@@ -1,0 +1,59 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block titulo %}Organiza+{% endblock %}</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'painel/organiza.css' %}">
+</head>
+<body class="{% if cfg_escola and cfg_escola.tema_claro %}tema-claro{% endif %}">
+<div class="layout">
+  <aside class="sidebar">
+    <div>
+      <div class="marca">
+        <span class="logo">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/>
+          </svg>
+        </span>
+        Organiza+
+      </div>
+      <nav class="menu">
+        <a href="{% url 'painel' %}" class="{% if menu == 'painel' %}ativo{% endif %}">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Painel
+        </a>
+        <a href="{% url 'calendario' %}" class="{% if menu == 'calendario' %}ativo{% endif %}">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+          Calendário Anual
+        </a>
+        <a href="{% url 'configuracoes' %}" class="{% if menu == 'configuracoes' %}ativo{% endif %}">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.9l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-2.9 1.2V21a2 2 0 11-4 0v-.1A1.7 1.7 0 006 19.4l-.1.1a2 2 0 11-2.8-2.8l.1-.1A1.7 1.7 0 003 13.7H3a2 2 0 110-4h.1A1.7 1.7 0 004.6 6L4.5 5.9a2 2 0 112.8-2.8l.1.1A1.7 1.7 0 0010.3 2V2a2 2 0 114 0v.1A1.7 1.7 0 0018 4.6l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 001.2 2.9H22a2 2 0 110 4h-.1"/></svg>
+          Configurações
+        </a>
+      </nav>
+    </div>
+    <div class="rodape">{{ cfg_escola.escola|default:'Escola' }}</div>
+  </aside>
+
+  <main class="conteudo">
+    {% if messages %}
+      {% for m in messages %}
+        <div class="msg {% if m.tags == 'error' %}msg-error{% else %}msg-success{% endif %}">{{ m }}</div>
+      {% endfor %}
+    {% endif %}
+    {% block conteudo %}{% endblock %}
+  </main>
+</div>
+
+<script>
+function abrirModal(id) { document.getElementById(id).classList.add('aberto'); }
+function fecharModal(id) { document.getElementById(id).classList.remove('aberto'); }
+function editar(dados) { for (const k in dados) { const el = document.getElementById('f_' + k); if (el) el.value = dados[k]; } }
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

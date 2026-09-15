@@ -1,0 +1,123 @@
+/* Organiza+ — clone do planner escolar (fiel à paleta/fontes do original) */
+:root {
+  --primary: oklch(0.52 0.13 195);
+  --primary-fg: oklch(0.99 0.005 190);
+  --sidebar: oklch(0.28 0.055 215);
+  --sidebar-fg: oklch(0.97 0.01 200);
+  --fg: oklch(0.129 0.042 264.695);
+  --muted: oklch(0.55 0.02 260);
+  --bg: oklch(0.985 0.005 250);
+  --card: #ffffff;
+  --border: oklch(0.92 0.01 255);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --alta: oklch(0.58 0.2 25);
+  --media: oklch(0.75 0.15 85);
+  --baixa: oklch(0.6 0.12 240);
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  color: var(--fg);
+  background: var(--bg);
+  font-size: 15px;
+}
+h1, h2, h3, .titulo { font-family: 'Sora', ui-sans-serif, system-ui, sans-serif; }
+
+.layout { display: flex; min-height: 100vh; }
+
+/* ---------- sidebar ---------- */
+.sidebar {
+  width: 250px; flex-shrink: 0; background: var(--sidebar); color: var(--sidebar-fg);
+  display: flex; flex-direction: column; justify-content: space-between; padding: 16px;
+}
+.marca { display: flex; align-items: center; gap: 10px; font-family: 'Sora', sans-serif;
+  font-weight: 700; font-size: 18px; color: #fff; margin-bottom: 22px; }
+.marca .logo { width: 34px; height: 34px; border-radius: 12px; background: var(--primary);
+  display: grid; place-items: center; color: var(--primary-fg); }
+.menu { display: flex; flex-direction: column; gap: 4px; }
+.menu a {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--radius-sm);
+  color: var(--sidebar-fg); text-decoration: none; font-weight: 500;
+}
+.menu a:hover { background: rgba(255,255,255,.08); }
+.menu a.ativo { background: var(--primary); color: var(--primary-fg); }
+.sidebar .rodape { font-size: 12.5px; color: rgba(255,255,255,.65); }
+
+/* ---------- conteúdo ---------- */
+.conteudo { flex: 1; padding: 28px 32px; }
+.cabeca { margin-bottom: 22px; }
+.cabeca h1 { font-size: 26px; font-weight: 700; margin: 0 0 4px; }
+.cabeca p { color: var(--muted); margin: 0; font-size: 14px; }
+
+.grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 18px; align-items: start; }
+@media (max-width: 900px) { .grid { grid-template-columns: 1fr; } .sidebar { display: none; } }
+
+.card-o { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px 18px; box-shadow: 0 1px 2px rgba(16,24,40,.04); margin-bottom: 18px; }
+.card-o h2 { font-size: 16px; font-weight: 600; margin: 0; display: flex; align-items: center; gap: 8px; }
+.card-cabeca { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+
+.btn-o { background: var(--primary); color: var(--primary-fg); border: 0; border-radius: var(--radius-sm);
+  padding: 7px 14px; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 6px; }
+.btn-o:hover { filter: brightness(1.06); color: var(--primary-fg); }
+.btn-fantasma { background: transparent; border: 1px solid var(--border); color: var(--fg);
+  border-radius: var(--radius-sm); padding: 6px 12px; font-size: 13px; cursor: pointer; text-decoration: none; }
+.btn-icone { background: transparent; border: 0; color: var(--muted); cursor: pointer; padding: 4px 6px; border-radius: 6px; }
+.btn-icone:hover { background: var(--bg); color: var(--fg); }
+
+.tarefa { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+  padding: 12px 0; border-bottom: 1px solid var(--border); }
+.tarefa:last-child { border-bottom: 0; }
+.tarefa .titulo { font-weight: 600; font-size: 14.5px; }
+.tarefa .detalhe { color: var(--muted); font-size: 12.5px; }
+.tarefa.feita .titulo { text-decoration: line-through; color: var(--muted); }
+.tag { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+.tag-alta { background: color-mix(in oklab, var(--alta) 16%, white); color: var(--alta); }
+.tag-media { background: color-mix(in oklab, var(--media) 22%, white); color: oklch(0.45 0.12 75); }
+.tag-baixa { background: color-mix(in oklab, var(--baixa) 16%, white); color: var(--baixa); }
+
+.aula { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.aula:last-child { border-bottom: 0; }
+.aula .barra { width: 4px; align-self: stretch; border-radius: 4px; background: var(--primary); }
+.aula .hora { color: var(--muted); font-size: 12.5px; min-width: 96px; }
+
+.info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.info .cx { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; }
+.info .rot { font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.info .val { font-weight: 600; font-size: 14px; }
+
+/* ---------- calendário ---------- */
+.meses { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+.mes { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; }
+.mes h3 { font-size: 13.5px; margin: 0 0 8px; font-weight: 700; }
+.mes table { width: 100%; border-collapse: collapse; }
+.mes td, .mes th { text-align: center; font-size: 11.5px; padding: 3px 0; color: var(--muted); }
+.mes td.dia { cursor: pointer; border-radius: 6px; color: var(--fg); position: relative; }
+.mes td.dia:hover { background: var(--bg); }
+.mes td.fora { opacity: .3; }
+.mes td.hoje { background: var(--primary); color: var(--primary-fg); font-weight: 700; }
+.mes td.com-evento::after { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--primary);
+  position: absolute; bottom: 1px; left: 50%; transform: translateX(-50%); }
+
+/* ---------- misc ---------- */
+.msg { border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 14px; font-size: 13.5px; }
+.msg-success { background: color-mix(in oklab, oklch(0.7 0.15 150) 18%, white); color: oklch(0.4 0.12 150); }
+.msg-error { background: color-mix(in oklab, var(--alta) 14%, white); color: var(--alta); }
+.form-campo { margin-bottom: 12px; }
+.form-campo label { display: block; font-size: 12.5px; font-weight: 600; margin-bottom: 4px; }
+.form-campo input, .form-campo select, .form-campo textarea {
+  width: 100%; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 9px 11px; font-size: 14px;
+  font-family: inherit; background: #fff; color: var(--fg);
+}
+.modal-fundo { position: fixed; inset: 0; background: rgba(10,15,25,.45); display: none;
+  align-items: center; justify-content: center; padding: 16px; z-index: 50; }
+.modal-fundo.aberto { display: flex; }
+.modal-cx { background: #fff; border-radius: var(--radius); width: 100%; max-width: 460px; padding: 20px; }
+.modal-cx h3 { margin: 0 0 14px; font-size: 17px; }
+.modal-acoes { display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px; }
+.texto-centro { text-align: center; }
+.login-cx { max-width: 380px; margin: 12vh auto; }

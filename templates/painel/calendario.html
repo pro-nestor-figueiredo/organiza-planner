@@ -1,0 +1,78 @@
+{% extends 'painel/base.html' %}
+{% block titulo %}Calendário Anual | Organiza+{% endblock %}
+{% block conteudo %}
+<div class="cabeca">
+  <h1>Calendário Anual</h1>
+  <p>{{ cfg_escola.escola }} · clique em uma data para editar</p>
+</div>
+
+<div class="d-flex align-items-center justify-content-center gap-3 mb-3">
+  <a class="btn-fantasma" href="?ano={{ ano_ant }}">&lt;</a>
+  <strong style="font-family:'Sora',sans-serif;font-size:18px">{{ ano }}</strong>
+  <a class="btn-fantasma" href="?ano={{ ano_prox }}">&gt;</a>
+</div>
+
+<div class="meses">
+  {% for m in meses %}
+  <div class="mes">
+    <h3>{{ m.nome }}</h3>
+    <table>
+      <tr><th>D</th><th>S</th><th>T</th><th>Q</th><th>Q</th><th>S</th><th>S</th></tr>
+      {% for semana in m.semanas %}
+      <tr>
+        {% for d in semana %}
+        <td class="dia {% if d.fora %}fora{% endif %} {% if d.hoje %}hoje{% endif %} {% if d.evento %}com-evento{% endif %}"
+            onclick="abrirEvento('{{ d.data|date:"Y-m-d" }}', '{{ d.evento.titulo|default:''|escapejs }}', '{{ d.evento.descricao|default:''|escapejs }}', {% if d.evento and d.evento.letivo %}true{% elif d.evento %}false{% else %}true{% endif %})">
+          {{ d.dia }}
+        </td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="modal-fundo" id="m_evento">
+  <div class="modal-cx">
+    <h3 id="t_evento">Dia</h3>
+    <input type="hidden" id="f_data">
+    <div class="form-campo"><label>Título</label><input id="f_titulo_ev"></div>
+    <div class="form-campo"><label>Descrição</label><textarea id="f_descricao" rows="3"></textarea></div>
+    <div class="form-campo form-check">
+      <input class="form-check-input" type="checkbox" id="f_letivo">
+      <label class="form-check-label" for="f_letivo">Dia letivo</label>
+    </div>
+    <div class="modal-acoes">
+      <button type="button" class="btn-fantasma" onclick="fecharModal('m_evento')">Cancelar</button>
+      <button type="button" class="btn-o" onclick="salvarEvento()">Salvar</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function abrirEvento(data, titulo, descricao, letivo) {
+  document.getElementById('f_data').value = data;
+  document.getElementById('f_titulo_ev').value = titulo;
+  document.getElementById('f_descricao').value = descricao;
+  document.getElementById('f_letivo').checked = letivo;
+  const partes = data.split('-');
+  document.getElementById('t_evento').innerText = 'Dia ' + partes[2] + '/' + partes[1] + '/' + partes[0];
+  abrirModal('m_evento');
+}
+function salvarEvento() {
+  const fd = new FormData();
+  fd.append('data', document.getElementById('f_data').value);
+  fd.append('titulo', document.getElementById('f_titulo_ev').value);
+  fd.append('descricao', document.getElementById('f_descricao').value);
+  fd.append('letivo', document.getElementById('f_letivo').checked ? '1' : '');
+  fd.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+  fetch("{% url 'evento_salvar' %}", { method: 'POST', body: fd })
+    .then(r => r.json())
+    .then(j => { if (j.ok) { location.reload(); } else { alert('Não deu para salvar.'); } })
+    .catch(() => alert('Erro ao salvar.'));
+}
+</script>
+{% endblock %}

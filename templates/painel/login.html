@@ -1,0 +1,29 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entrar | Organiza+</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'painel/organiza.css' %}">
+</head>
+<body>
+<div class="login-cx">
+  <div class="card-o">
+    <div class="marca" style="color:var(--fg)">
+      <span class="logo">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg>
+      </span>
+      Organiza+
+    </div>
+    {% if form.errors %}<div class="msg msg-error">Usuário ou senha inválidos.</div>{% endif %}
+    <form method="post">{% csrf_token %}
+      <div class="form-campo"><label>Usuário</label><input name="username" autofocus required></div>
+      <div class="form-campo"><label>Senha</label><input type="password" name="password" required></div>
+      <div class="modal-acoes"><button class="btn-o" style="width:100%;justify-content:center">Entrar</button></div>
+    </form>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,47 @@
+{% extends 'painel/base.html' %}
+{% block titulo %}Configurações | Organiza+{% endblock %}
+{% block conteudo %}
+<div class="cabeca">
+  <h1>Configurações</h1>
+  <p>{{ cfg_escola.escola }}</p>
+</div>
+
+<div style="max-width:640px">
+  <div class="card-o">
+    <h2 style="margin-bottom:12px">Informações da escola</h2>
+    <form method="post">{% csrf_token %}
+      <div class="form-campo"><label>Escola</label><input name="escola" value="{{ cfg.escola }}"></div>
+      <div class="form-campo"><label>Turma</label><input name="turma" value="{{ cfg.turma }}"></div>
+      <div class="form-campo"><label>Período</label><input name="periodo" value="{{ cfg.periodo }}"></div>
+      <div class="modal-acoes"><button class="btn-o">Salvar</button></div>
+    </form>
+  </div>
+
+  <div class="card-o">
+    <h2 style="margin-bottom:12px">Aparência</h2>
+    <form method="post">{% csrf_token %}
+      <input type="hidden" name="escola" value="{{ cfg.escola }}">
+      <input type="hidden" name="turma" value="{{ cfg.turma }}">
+      <input type="hidden" name="periodo" value="{{ cfg.periodo }}">
+      <div class="form-check form-switch form-campo">
+        <input class="form-check-input" type="checkbox" name="tema_claro" id="tema" {% if cfg.tema_claro %}checked{% endif %}>
+        <label class="form-check-label" for="tema">Tema Claro</label>
+      </div>
+      <div class="modal-acoes"><button class="btn-o">Aplicar</button></div>
+    </form>
+  </div>
+
+  <div class="card-o">
+    <h2 style="margin-bottom:12px">Conta</h2>
+    <div class="d-flex gap-2">
+      <span class="btn-fantasma">{{ request.user.username }}</span>
+      <a class="btn-fantasma" href="{% url 'logout' %}">Sair da conta</a>
+    </div>
+  </div>
+
+  <div class="card-o">
+    <h2 style="margin-bottom:6px">Suporte</h2>
+    <p style="color:var(--muted);font-size:13.5px;margin:0">Em caso de dúvidas sobre o acesso, fale com a secretaria da {{ cfg.escola }}.</p>
+  </div>
+</div>
+{% endblock %}

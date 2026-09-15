@@ -1,0 +1,182 @@
+{% extends 'painel/base.html' %}
+{% block titulo %}Painel do estudante | Organiza+{% endblock %}
+{% block conteudo %}
+<div class="cabeca">
+  <h1>Painel</h1>
+  <p>{{ cfg_escola.escola }} · {{ hoje|date:"l, d \d\e F" }}</p>
+</div>
+
+<div class="grid">
+  <div>
+    <div class="card-o">
+      <div class="card-cabeca">
+        <h2>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+          Tarefas
+        </h2>
+        <button class="btn-o" onclick="novaTarefa()">+ Nova tarefa</button>
+      </div>
+
+      {% for t in tarefas %}
+      <div class="tarefa {% if t.concluida %}feita{% endif %}">
+        <div>
+          <div class="titulo">{{ t.titulo }}</div>
+          <div class="detalhe">{{ t.materia }} · entrega {{ t.entrega|date:"d/m/Y" }}</div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="tag tag-{{ t.prioridade }}">{{ t.get_prioridade_display }}</span>
+          <form method="post" action="{% url 'tarefa_concluir' t.pk %}" class="d-inline">{% csrf_token %}
+            <button class="btn-icone" title="Concluir">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+            </button>
+          </form>
+          <button class="btn-icone" title="Editar"
+            onclick='editarTarefa({{ t.pk }}, "{{ t.titulo|escapejs }}", "{{ t.materia|escapejs }}", "{{ t.entrega|date:"Y-m-d" }}", "{{ t.prioridade }}")'>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+          </button>
+          <form method="post" action="{% url 'tarefa_excluir' t.pk %}" class="d-inline" onsubmit="return confirm('Excluir a tarefa?')">{% csrf_token %}
+            <button class="btn-icone" title="Excluir">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+            </button>
+          </form>
+        </div>
+      </div>
+      {% empty %}
+      <div class="texto-centro" style="padding:26px 0;color:var(--muted)">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        <div style="margin-top:8px">Nenhuma tarefa ainda — clique em <b>+ Nova tarefa</b></div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="card-o">
+      <h2 style="margin-bottom:12px">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>
+        Informações escolares
+      </h2>
+      <div class="info">
+        <div class="cx"><div class="rot">Escola</div><div class="val">{{ cfg_escola.escola }}</div></div>
+        <div class="cx"><div class="rot">Turma</div><div class="val">{{ cfg_escola.turma }}</div></div>
+        <div class="cx"><div class="rot">Período</div><div class="val">{{ cfg_escola.periodo }}</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="card-o">
+      <div class="card-cabeca">
+        <h2>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          Cronograma Hoje
+        </h2>
+        <button class="btn-o" onclick="novaAula()">+</button>
+      </div>
+      {% for a in aulas %}
+      <div class="aula">
+        <div class="barra"></div>
+        <div class="flex-grow-1">
+          <div class="titulo" style="font-weight:600">{{ a.disciplina }}</div>
+          <div class="hora">{{ a.horario|time:"H:i" }} · {{ a.local|default:'—' }}</div>
+        </div>
+        <button class="btn-icone" title="Editar" onclick='editarAula({{ a.pk }}, "{{ a.disciplina|escapejs }}", "{{ a.local|escapejs }}", "{{ a.horario|time:"H:i" }}", {{ a.dia_semana }})'>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+        </button>
+        <form method="post" action="{% url 'aula_excluir' a.pk %}" onsubmit="return confirm('Remover a aula?')">{% csrf_token %}
+          <button class="btn-icone" title="Excluir">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+          </button>
+        </form>
+      </div>
+      {% empty %}
+      <div class="texto-centro" style="padding:22px 0;color:var(--muted)">Sem aulas para hoje — clique em <b>+</b></div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- modal tarefa -->
+<div class="modal-fundo" id="m_tarefa">
+  <div class="modal-cx">
+    <h3 id="t_tarefa">Nova tarefa</h3>
+    <form method="post" action="{% url 'tarefa_salvar' %}">{% csrf_token %}
+      <input type="hidden" name="id" id="f_id">
+      <div class="form-campo"><label>Título</label><input id="f_titulo" name="titulo" required></div>
+      <div class="form-campo"><label>Matéria</label><input id="f_materia" name="materia"></div>
+      <div class="form-campo"><label>Entrega</label><input type="date" id="f_entrega" name="entrega"></div>
+      <div class="form-campo"><label>Prioridade</label>
+        <select id="f_prioridade" name="prioridade">
+          <option value="alta">Alta</option>
+          <option value="media" selected>Média</option>
+          <option value="baixa">Baixa</option>
+        </select>
+      </div>
+      <div class="modal-acoes">
+        <button type="button" class="btn-fantasma" onclick="fecharModal('m_tarefa')">Cancelar</button>
+        <button type="submit" class="btn-o">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- modal aula -->
+<div class="modal-fundo" id="m_aula">
+  <div class="modal-cx">
+    <h3 id="t_aula">Nova aula</h3>
+    <form method="post" action="{% url 'aula_salvar' %}">{% csrf_token %}
+      <input type="hidden" name="id" id="f_id_aula">
+      <div class="form-campo"><label>Disciplina</label><input id="f_disciplina" name="disciplina" required></div>
+      <div class="form-campo"><label>Local</label><input id="f_local" name="local"></div>
+      <div class="form-campo"><label>Horário</label><input type="time" id="f_horario" name="horario" value="07:20"></div>
+      <div class="form-campo"><label>Dia da semana</label>
+        <select id="f_dia_semana" name="dia_semana">
+          {% for v, n in dias %}<option value="{{ v }}">{{ n }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="modal-acoes">
+        <button type="button" class="btn-fantasma" onclick="fecharModal('m_aula')">Cancelar</button>
+        <button type="submit" class="btn-o">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function novaTarefa() {
+  document.getElementById('t_tarefa').innerText = 'Nova tarefa';
+  document.getElementById('f_id').value = '';
+  ['titulo','materia'].forEach(k => document.getElementById('f_' + k).value = '');
+  document.getElementById('f_entrega').value = '';
+  document.getElementById('f_prioridade').value = 'media';
+  abrirModal('m_tarefa');
+}
+function editarTarefa(id, titulo, materia, entrega, prioridade) {
+  document.getElementById('t_tarefa').innerText = 'Editar tarefa';
+  document.getElementById('f_id').value = id;
+  document.getElementById('f_titulo').value = titulo;
+  document.getElementById('f_materia').value = materia;
+  document.getElementById('f_entrega').value = entrega;
+  document.getElementById('f_prioridade').value = prioridade;
+  abrirModal('m_tarefa');
+}
+function novaAula() {
+  document.getElementById('t_aula').innerText = 'Nova aula';
+  document.getElementById('f_id_aula').value = '';
+  document.getElementById('f_disciplina').value = '';
+  document.getElementById('f_local').value = '';
+  document.getElementById('f_horario').value = '07:20';
+  document.getElementById('f_dia_semana').value = '{{ hoje.weekday }}';
+  abrirModal('m_aula');
+}
+function editarAula(id, disciplina, local, horario, dia) {
+  document.getElementById('t_aula').innerText = 'Editar aula';
+  document.getElementById('f_id_aula').value = id;
+  document.getElementById('f_disciplina').value = disciplina;
+  document.getElementById('f_local').value = local;
+  document.getElementById('f_horario').value = horario;
+  document.getElementById('f_dia_semana').value = dia;
+  abrirModal('m_aula');
+}
+</script>
+{% endblock %}
